@@ -2,11 +2,11 @@
 @section('content')
 <style type="text/css">
     .not-active {
-  pointer-events: none;
-  cursor: default;
-  text-decoration: none;
-  color: black;
-}
+        pointer-events: none;
+        cursor: default;
+        text-decoration: none;
+        color: black;
+    }
 </style>
 <div class="card">
     <div class="card-header">
@@ -14,6 +14,48 @@
     </div>
 
     <div class="card-body">
+
+                    <div>
+        <div class="form-row mb-2">
+            
+
+            <div class="form-group col-md-3">
+                <label for="inputEmail4">Customer Name</label>
+                <input type="text" class="form-control" id="inputEmail4" placeholder="Customer Name" name="filter_name" @if(null!== @$filter_name ) value="{{ $filter_name}}" @endif id="input-name" >
+            </div>
+            <div class="form-group col-md-3">
+                <label for="inputState">Lead Status</label>
+                <select id="input" class="form-control" name="filter_status">
+                    <option value="">Select Booking Type</option>
+                    <option @if (@$filter_status == 'Posted') selected @endif value="Posted">Posted</option>
+                    <option @if (@$filter_status == 'Call Back Required') selected @endif value="Call Back Required">Call Back Required</option>
+                    <option @if (@$filter_status == 'payment done') selected @endif value="payment done">payment done</option>
+                    <option @if (@$filter_status == 'Fake Lead') selected @endif value="Fake Lead">Fake Lead</option>
+                    <option @if (@$filter_status == 'Status4') selected @endif value="Status4">Status4</option>
+                    <option @if (@$filter_status == 'Status5') selected @endif value="Status5">Status5</option>
+                    <option @if (@$filter_status == 'Status6') selected @endif value="Status6">Status6</option>
+                </select>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="inputEmail4">Website</label>
+                <input type="text" class="form-control" id="inputEmail4" placeholder="Website" name="filter_website" @if(null!== @$filter_website ) value="{{ $filter_website}}" @endif id="input-name" >
+            </div>
+            <div class="form-group col-md-2">
+                <label for="inputEmail4">Assigned User</label>
+                <select id="input" class="form-control" name="filter_user">
+                    <option value="">Select User</option>
+                @foreach($users as $user)
+                <option @if (@$filter_user == $user->id) selected @endif value="{{ $user->id }}">{{ $user->name }}</option>
+                @endforeach
+                </select>
+            </div>
+            <div class="form-group col-md-1 filter-btn col-md-1 text-right" style="margin-top: 30px;">
+                <button type="button" id="button-filter" class="btn btn-danger"><i class="fa fa-filter"></i>&nbsp;Filter</button>
+            </div>
+        </div>
+
+    </div>
+
         <div class="table-responsive">
             <table class=" table table-bordered table-striped table-hover datatable datatable-User">
                 <thead>
@@ -24,13 +66,7 @@
                         </th>
                         <th>
                             {{ trans('cruds.user.fields.name') }}
-                        </th>                        
-                        {{-- <th>
-                            {{ trans('cruds.user.fields.email') }}
-                        </th> --}}
-                       {{--  <th>
-                            {{ trans('cruds.user.fields.mobile') }}
-                        </th> --}}
+                        </th>
                         <th>
                             {{ trans('cruds.user.fields.lead_status') }}
                         </th>
@@ -68,12 +104,6 @@
                             <td>
                                 {{ $user->name ?? '' }}
                             </td>
-                           {{--  <td>
-                                {{ $user->email ?? '' }}
-                            </td> --}}
-                            {{-- <td>
-                                {{ $user->mobile ?? '' }}
-                            </td> --}}
                              <td>
                                 {{ $user->lead_status ?? '' }}
                             </td>

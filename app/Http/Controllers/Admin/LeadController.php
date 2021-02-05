@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Gate;
 use Auth;
 use DB;
 use Session;
+use App\User;
 use URL;
 
 class LeadController extends Controller
@@ -34,11 +35,13 @@ class LeadController extends Controller
             $lead_users[$key]->user = $user_detail['user'];
         }
 
+        $users = User::whereNotIn('id',[1])->get();
+
         // echo '<pre>'; print_r($lead_users); echo '</pre>'; die();
 
         Session::forget('back_leads_url');
         Session::put('back_leads_url', URL::current());
-        return view('admin.leads.index', compact('lead_users'))->with('no',0);
+        return view('admin.leads.index', compact('lead_users','users'))->with('no',0);
     }
 
     /**
