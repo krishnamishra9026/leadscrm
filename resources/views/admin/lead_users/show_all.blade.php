@@ -2,7 +2,10 @@
 @section('content')
 <div class="card">
     <div class="card-header">
-        Lead {{ trans('cruds.user.title_singular') }}s {{ trans('global.list') }}
+        All Lead {{ trans('cruds.user.title_singular') }}s {{ trans('global.list') }}
+        <a style="float: right;" class="btn btn-default" href="{{ route('admin.lead-users.index') }}">
+            <i class="fa fa-arrow-left" aria-hidden="true"></i> {{ trans('global.back_to_list') }}
+        </a>
     </div>
 
     <div class="card-body">
@@ -37,11 +40,8 @@
                         <th>
                             Assign to User
                         </th>
-                        {{-- <th>
-                            Date & Time
-                        </th> --}}
                         <th>
-                             Time
+                            Date & Time
                         </th>
                         <th>
                            Action
@@ -55,7 +55,7 @@
 
                             </td>
                             <td>
-                                {{ $no++ }}
+                                {{ $user->id }}
                             </td>
                             <td>
                                 {{ $user->name ?? '' }}
@@ -72,17 +72,14 @@
                              <td>
                                 {{ ucfirst($user->payment_status) ?? '' }}
                             </td>
-                            <td>
+                             <td>
                                 {{ $user->website ?? '' }}
                             </td>
-                            <td>
+                             <td>
                                 {{ $user->user->name ?? '' }}
                             </td>
-                            {{-- <td>
-                                {{ date(('d-m-Y H:i:s'),strtotime($user->created_at)) ?? '' }}
-                            </td> --}}
                             <td>
-                                {{ \Carbon\Carbon::parse($user->created_at)->diffForHumans() }}
+                                {{ date(('d-m-Y H:i:s'),strtotime($user->created_at)) ?? '' }}
                             </td>
                             <td>
                                 <a class="btn btn-xs btn-primary" href="{{ route('admin.lead-users.show', $user->id) }}">
@@ -114,8 +111,7 @@
 @parent
 <script>
     $(function () {
-  let dtButtons = $.extend(true, [], [])
-
+  let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
   let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
   let deleteButton = {
     text: deleteButtonTrans,

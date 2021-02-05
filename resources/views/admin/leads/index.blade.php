@@ -1,5 +1,13 @@
 @extends('layouts.admin')
 @section('content')
+<style type="text/css">
+    .not-active {
+  pointer-events: none;
+  cursor: default;
+  text-decoration: none;
+  color: black;
+}
+</style>
 <div class="card">
     <div class="card-header">
         Lead {{ trans('cruds.user.title_singular') }}s {{ trans('global.list') }}
@@ -10,9 +18,7 @@
             <table class=" table table-bordered table-striped table-hover datatable datatable-User">
                 <thead>
                     <tr>
-                        <th width="10">
-
-                        </th>
+                        
                         <th>
                             {{ trans('cruds.user.fields.id') }}
                         </th>
@@ -22,9 +28,9 @@
                         {{-- <th>
                             {{ trans('cruds.user.fields.email') }}
                         </th> --}}
-                        <th>
+                       {{--  <th>
                             {{ trans('cruds.user.fields.mobile') }}
-                        </th>
+                        </th> --}}
                         <th>
                             {{ trans('cruds.user.fields.lead_status') }}
                         </th>
@@ -41,7 +47,7 @@
                             Date & Time
                         </th> --}}
                         <th>
-                             Time
+                            Time
                         </th>
                         <th>
                            Action
@@ -49,13 +55,15 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @php
+                        $page_count = ($lead_users->currentPage()-1)* $lead_users->perPage()+($lead_users->total() ? 1:0);
+                        $nos = $page_count +($no);
+                    @endphp
                     @foreach($lead_users as $key => $user)
                         <tr data-entry-id="{{ $user->id }}">
+                           
                             <td>
-
-                            </td>
-                            <td>
-                                {{ $no++ }}
+                                {{ $nos++ }}
                             </td>
                             <td>
                                 {{ $user->name ?? '' }}
@@ -63,9 +71,9 @@
                            {{--  <td>
                                 {{ $user->email ?? '' }}
                             </td> --}}
-                             <td>
+                            {{-- <td>
                                 {{ $user->mobile ?? '' }}
-                            </td>
+                            </td> --}}
                              <td>
                                 {{ $user->lead_status ?? '' }}
                             </td>
@@ -85,7 +93,15 @@
                                 {{ \Carbon\Carbon::parse($user->created_at)->diffForHumans() }}
                             </td>
                             <td>
-                                <a class="btn btn-xs btn-primary" href="{{ route('admin.lead-users.show', $user->id) }}">
+                                @php
+                                    $dbtimestamp = strtotime($user->time);
+                                    if (time() - $dbtimestamp > 15 * 60) {
+                                        $button_enable = true;
+                                    }else{
+                                        $button_enable = false;
+                                    }
+                                @endphp
+                                <a  class="btn btn-xs btn-primary @if (!$button_enable) not-active @endif" href="{{ route('admin.lead-users.show', $user->id) }}">
                                     {{ trans('global.view') }}
                                 </a>  
                                 @if($user->total > 1)   
@@ -104,56 +120,18 @@
                     @endforeach
                 </tbody>
             </table>
+            <div>
+                <div style="float: left;" class="d-flex justify-content-center">
+                    Showing {{($lead_users->currentPage()-1)* $lead_users->perPage()+($lead_users->total() ? 1:0)}} to {{($lead_users->currentPage()-1)*$lead_users->perPage()+count($lead_users)}}  of  {{$lead_users->total()}}  Records
+                </div>
+                <div style="float: right;" class="d-flex justify-content-center">
+                    {!! $lead_users->links() !!}
+                </div>
+            </div>
         </div>
-
-
     </div>
 </div>
 @endsection
 @section('scripts')
 @parent
-<script>
-    $(function () {
-  let dtButtons = $.extend(true, [], [])
-
-  let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
-  let deleteButton = {
-    text: deleteButtonTrans,
-    url: "{{ route('admin.lead-users.mass_destroy') }}",
-    className: 'btn-danger',
-    action: function (e, dt, node, config) {
-      var ids = $.map(dt.rows({ selected: true }).nodes(), function (entry) {
-          return $(entry).data('entry-id')
-      });
-
-      if (ids.length === 0) {
-        alert('{{ trans('global.datatables.zero_selected') }}')
-
-        return
-      }
-
-      if (confirm('{{ trans('global.areYouSure') }}')) {
-        $.ajax({
-          headers: {'x-csrf-token': _token},
-          method: 'POST',
-          url: config.url,
-          data: { ids: ids, _method: 'DELETE' }})
-          .done(function () { location.reload() })
-      }
-    }
-  }
-  dtButtons.push(deleteButton)
-
-  $.extend(true, $.fn.dataTable.defaults, {
-    order: [[ 1, 'desc' ]],
-    pageLength: 100,
-  });
-  $('.datatable-User:not(.ajaxTable)').DataTable({ buttons: dtButtons })
-    $('a[data-toggle="tab"]').on('shown.bs.tab', function(e){
-        $($.fn.dataTable.tables(true)).DataTable()
-            .columns.adjust();
-    });
-})
-
-</script>
 @endsection

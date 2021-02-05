@@ -16,6 +16,10 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin', 'as' => 'admin.'], 
     Route::resource('users', 'Admin\UsersController');
     Route::delete('users_mass_destroy', 'Admin\UsersController@massDestroy')->name('users.mass_destroy');
     Route::resource('lead-users', 'Admin\LeadUserController');
+    Route::get('lead-users/show-all/{id}', 'Admin\LeadUserController@showAll')->name('lead-users.show-all');
     Route::get('changeStatus', 'Admin\LeadUserController@ChangeLeadStatus');
     Route::delete('lead_users_mass_destroy', 'Admin\LeadUserController@massDestroy')->name('lead-users.mass_destroy');
+    Route::resource('leads', 'Admin\LeadController');
+    Route::get('leads/show-all/{id}', 'Admin\LeadController@showAll')->name('leads.show-all');
+    Route::delete('leads_mass_destroy', 'Admin\LeadController@massDestroy')->name('leads.mass_destroy');
 });

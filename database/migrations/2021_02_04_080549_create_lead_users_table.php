@@ -18,6 +18,8 @@ class CreateLeadUsersTable extends Migration
             $table->string('name')->nullable();
             $table->string('email')->nullable();
             $table->string('mobile')->nullable();
+            $table->string('website')->nullable();
+            $table->string('is_view')->default(0);
             $table->text('meta')->nullable();
             $table->string('lead_status')->default('posted');
             $table->string('payment_status')->default('waiting');

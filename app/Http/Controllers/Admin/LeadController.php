@@ -11,9 +11,9 @@ use DB;
 use Session;
 use URL;
 
-class LeadUserController extends Controller
+class LeadController extends Controller
 {
-    /**
+      /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -24,23 +24,21 @@ class LeadUserController extends Controller
             return abort(401);
         }
 
-        $lead_users = LeadUser::orderBy('created_at')->get()->groupBy(function($item) {
-                return $item->mobile;
-            });
-
         $lead_users = DB::table('lead_users')
         ->select('*', DB::raw('count(*) as total'))
         ->groupBy('mobile')
-        ->latest('created_at')->get();
+        ->latest()->paginate(50);;
 
         foreach ($lead_users as $key => $value) {
             $user_detail = LeadUser::where('id',$value->id)->with('user')->first();
             $lead_users[$key]->user = $user_detail['user'];
         }
 
+        // echo '<pre>'; print_r($lead_users); echo '</pre>'; die();
+
         Session::forget('back_leads_url');
         Session::put('back_leads_url', URL::current());
-        return view('admin.lead_users.index', compact('lead_users'))->with('no',1);
+        return view('admin.leads.index', compact('lead_users'))->with('no',0);
     }
 
     /**
@@ -83,9 +81,11 @@ class LeadUserController extends Controller
            }           
        }      
 
-       $lead_user = LeadUser::where('id',$lead_user->id)->with('user')->latest()->first();
+       $lead_user = LeadUser::where('id',$lead_user->id)->with('user')->latest()->first(); 
 
-        return view('admin.lead_users.show', compact('lead_user'));
+
+
+        return view('admin.leads.show', compact('lead_user'));
        
     }
 
@@ -104,7 +104,7 @@ class LeadUserController extends Controller
         Session::forget('back_leads_url');
         Session::put('back_leads_url', URL::current());
 
-        return view('admin.lead_users.show_all', compact('lead_users'))->with('no',1);
+        return view('admin.leads.show_all', compact('lead_users'))->with('no',1);
     }
 
 

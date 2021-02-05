@@ -51,19 +51,8 @@
                         <th>
                             {{ trans('cruds.user.fields.meta') }}
                         </th>
-                        @php
-                            $custom_datas = json_decode($lead_user->meta, true);
-                            $i = 1;
-                        @endphp
-                        <td>                            
-                            @if($custom_datas)
-                            @foreach ($custom_datas as $key => $custom_data)
-                                <span><b>{{ ucwords(str_replace('_', ' ', $key)) }}</b> : {{ $custom_data }}</span> @if($i < count($custom_datas)), @endif
-                                @php
-                                    $i++;
-                                @endphp
-                            @endforeach
-                            @endif
+                        <td>
+                            {{ $lead_user->meta }}
                         </td>
                     </tr>
                     <tr>

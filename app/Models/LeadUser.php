@@ -9,7 +9,7 @@ class LeadUser extends Model
 {
 
     protected $fillable = [
-        'name','email','mobile','meta','lead_status','payment_status','date','time'
+        'name','email','mobile','meta','lead_status','website','payment_status','date','time'
     ];
 
     /**

@@ -47,7 +47,7 @@
                 </li>
             @endcan
 
-            @can('users_manage')
+            @can('manage-leads')
 
             <li class="nav-item">
                 <a href="{{ route("admin.lead-users.index") }}" class="nav-link {{ request()->is('admin/lead-users') || request()->is('admin/lead-users/*') ? 'active' : '' }}">

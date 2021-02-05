@@ -39,8 +39,9 @@ class LeadUserController extends Controller
     public function store(Request $request)
     {
 
+        // echo '<pre>'; print_r($request->all()); echo '</pre>'; die();
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            // 'name' => 'required|string|max:255',
             'mobile' => 'required|min:10',
         ]);
 
@@ -53,7 +54,8 @@ class LeadUserController extends Controller
         $input['name'] = $request->name;
         $input['email'] = $request->email;
         $input['mobile'] = $request->mobile;
-        $input['meta'] = $request->meta;
+        $input['website'] = $request->website;
+        $input['meta'] = $request->custom_data;
         if (isset($request->payment_status) && !empty($request->payment_status)) {
             $input['payment_status'] = $request->payment_status;
         }
@@ -62,6 +64,10 @@ class LeadUserController extends Controller
         }
         $input['date'] = date('Y-m-d');
         $input['time'] = date("H:i:s");
+        $lead_exists = LeadUser::where(['date'=>date('Y-m-d'), 'mobile' => $request->mobile])->exists();
+        if ($lead_exists) {
+           return $response = ['message' => "Lead already exists!"];
+        }
         $user = LeadUser::create($input);
         return $response = ['message' => "Data inserted successfully!"];
     }

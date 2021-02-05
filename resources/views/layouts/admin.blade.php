@@ -37,21 +37,17 @@
         </button>
 
         <ul class="nav navbar-nav ml-auto">
-            @if(count(config('panel.available_languages', [])) > 1)
-                <li class="nav-item dropdown d-md-down-none">
-                    <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                        {{ strtoupper(app()->getLocale()) }}
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        @foreach(config('panel.available_languages') as $langLocale => $langName)
-                            <a class="dropdown-item" href="{{ url()->current() }}?change_language={{ $langLocale }}">{{ strtoupper($langLocale) }} ({{ $langName }})</a>
-                        @endforeach
-                    </div>
-                </li>
-            @endif
+            <li class="nav-item dropdown d-md-down-none">
+                <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" style="margin-right: 40px;">
+                   Welcome <b><span class="role">{{ucfirst(Auth::User()->name)}} </span> ( <span class="role">{{ucfirst(Auth::User()->roles->first()->name)}}</span> ) </b> 
+                    
+                <div class="dropdown-menu dropdown-menu-right">                  
 
-
+                    <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logoutform').submit();"><i class="nav-icon fas fa-fw fa-sign-out-alt"></i>{{ trans('global.logout') }}</a>
+                </div>
+            </li>
         </ul>
+
     </header>
 
     <div class="app-body">
