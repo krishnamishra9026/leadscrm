@@ -36,21 +36,11 @@
                     <option @if (@$filter_status == 'Status6') selected @endif value="Status6">Status6</option>
                 </select>
             </div>
-            <div class="form-group col-md-3">
-                <label for="inputEmail4">Website</label>
-                <select class="form-control" name="filter_website" >
-                    <option value="">Please select website</option>
-                    <option @if (@$filter_website == 'ranthamboretigerreserve.in') selected @endif value="ranthamboretigerreserve.in">ranthamboretigerreserve.in</option>
-                    <option @if (@$filter_website == 'jimcorbettnationalparkonline.in') selected @endif value="jimcorbettnationalparkonline.in">jimcorbettnationalparkonline.in</option>
-                    <option @if (@$filter_website == 'girsafaribooking.com') selected @endif value="girsafaribooking.com">girsafaribooking.com</option>
-                    <option @if (@$filter_website == 'jimcorbett.in') selected @endif value="jimcorbett.in">jimcorbett.in</option>
-                    <option @if (@$filter_website == 'girlionsafari.com') selected @endif value="girlionsafari.com">girlionsafari.com</option>
-                    <option @if (@$filter_website == 'girlion.in') selected @endif value="girlion.in">girlion.in</option>
-                    <option @if (@$filter_website == 'bandhavgarh.com') selected @endif value="bandhavgarh.com">bandhavgarh.com</option>
-                    <option @if (@$filter_website == 'travelwalacab.com') selected @endif value="travelwalacab.com">travelwalacab.com</option>
-                </select>
-            </div>
             <div class="form-group col-md-2">
+                <label for="inputEmail4">Website</label>
+                <input type="text" class="form-control" id="inputEmail4" placeholder="Website" name="filter_website" @if(null!== @$filter_website ) value="{{ $filter_website}}" @endif id="input-name" >
+            </div>
+            <div class="form-group col-md-3">
                 <label for="inputEmail4">Assigned User</label>
                 <select id="input" class="form-control" name="filter_user">
                     <option value="">Select User</option>
@@ -162,7 +152,7 @@
                                 </a>  
                                 @endif                      
 
-                                <form action="{{ route('admin.leads.destroy', $user->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                <form action="{{ route('admin.lead-users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
                                     <input type="hidden" name="_method" value="DELETE">
                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                     <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
@@ -200,7 +190,7 @@
             url += '&filter_status=' + encodeURIComponent(filter_status);
         }
         
-        var filter_website = $('select[name=\'filter_website\']').val();
+        var filter_website = $('input[name=\'filter_website\']').val();
         if (filter_website) {
             url += '&filter_website=' + encodeURIComponent(filter_website);
         }

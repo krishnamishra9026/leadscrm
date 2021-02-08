@@ -1,11 +1,6 @@
 @extends('layouts.admin')
 @section('content')
 
-<style type="text/css">
-    th{
-        width:20%
-    }
-</style>
 <div class="card">
     <div class="card-header">
         {{ trans('global.show') }} {{ trans('cruds.user.title') }}
@@ -20,14 +15,14 @@
         <div class="mb-2">
             <table class="table table-bordered table-striped">
                 <tbody>
-                    {{-- <tr>
+                    <tr>
                         <th>
                             {{ trans('cruds.user.fields.id') }}
                         </th>
                         <td>
                             {{ $lead_user->id }}
                         </td>
-                    </tr> --}}
+                    </tr>
                     <tr>
                         <th>
                             {{ trans('cruds.user.fields.name') }}
@@ -56,19 +51,8 @@
                         <th>
                             {{ trans('cruds.user.fields.meta') }}
                         </th>
-                        @php
-                            $custom_datas = json_decode($lead_user->meta, true);
-                            $i = 1;
-                        @endphp
-                        <td>                            
-                            @if($custom_datas)
-                            @foreach ($custom_datas as $key => $custom_data)
-                                <span><b>{{ ucwords(str_replace('_', ' ', $key)) }}</b> : {{ $custom_data }}</span> @if($i < count($custom_datas)), @endif
-                                @php
-                                    $i++;
-                                @endphp
-                            @endforeach
-                            @endif
+                        <td>
+                            {{ $lead_user->meta }}
                         </td>
                     </tr>
                     <tr>
@@ -102,28 +86,6 @@
                         </th>
                         <td>
                             {{ $lead_user->user->name ?? '' }}
-                        </td>
-                    </tr>
-                    
-                    <tr>
-                        <th>
-                           Comments @if(count($lead_user->comments) > 0)  <a  class="btn btn-xs btn-primary" href="{{ route('admin.comments.show', $lead_user->id) }}"> {{ trans('global.view') }} Comments </a> @endif
-                        </th>
-                        <td>
-                           <form method="post" action="{{ route('admin.comments.store') }}">
-                            <div class="form-group">
-                                @csrf
-                                <input type="hidden" value="{{ $lead_user->id }}" name="lead_users_id">
-                                <select name="comment_type" class="form-control" required>
-                                    <option value="">Select Comment Type</option>
-                                    <option value="Lead">About Lead</option>
-                                    <option value="Payment">About Payment</option>
-                                </select>
-                                
-                                <textarea style="margin-top: 10px;" name="comment" placeholder="Comment" class="form-control" required></textarea>
-                                <input type="submit" style="margin-top: 10px;" class="btn btn-success" />
-                            </div>
-                        </form>
                         </td>
                     </tr>
                     <tr>

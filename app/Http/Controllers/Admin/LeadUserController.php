@@ -115,12 +115,12 @@ class LeadUserController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-     public function changeLeadStatus(Request $request)
+    public function changeLeadStatus(Request $request)
     {
         $user = LeadUser::find($request->user_id);
         $user->lead_status = $request->status;
         $user->save();
-  
+        
         return response()->json(['success'=>'Lead status changed successfully.']);
     }
 

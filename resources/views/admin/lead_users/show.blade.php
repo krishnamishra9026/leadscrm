@@ -15,14 +15,14 @@
         <div class="mb-2">
             <table class="table table-bordered table-striped">
                 <tbody>
-                    <tr>
+                   {{--  <tr>
                         <th>
                             {{ trans('cruds.user.fields.id') }}
                         </th>
                         <td>
                             {{ $lead_user->id }}
                         </td>
-                    </tr>
+                    </tr> --}}
                     <tr>
                         <th>
                             {{ trans('cruds.user.fields.name') }}
@@ -97,6 +97,28 @@
                         </th>
                         <td>
                             {{ $lead_user->user->name ?? '' }}
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <th>
+                           Comments  <a  class="btn btn-xs btn-primary" href="{{ route('admin.comments.show', $lead_user->id) }}"> {{ trans('global.view') }} Comments </a> 
+                        </th>
+                        <td>
+                           <form method="post" action="{{ route('admin.comments.store') }}">
+                            <div class="form-group">
+                                @csrf
+                                <input type="hidden" value="{{ $lead_user->id }}" name="lead_users_id">
+                                <select name="comment_type" class="form-control" required>
+                                    <option value="">Select Comment Type</option>
+                                    <option value="Lead">About Lead</option>
+                                    <option value="Payment">About Payment</option>
+                                </select>
+                                
+                                <textarea style="margin-top: 10px;" name="comment" placeholder="Comment" class="form-control" required></textarea>
+                                <input type="submit" style="margin-top: 10px;" class="btn btn-success" />
+                            </div>
+                        </form>
                         </td>
                     </tr>
                     <tr>

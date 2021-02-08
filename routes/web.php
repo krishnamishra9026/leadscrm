@@ -20,6 +20,8 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin', 'as' => 'admin.'], 
     Route::get('changeStatus', 'Admin\LeadUserController@ChangeLeadStatus');
     Route::delete('lead_users_mass_destroy', 'Admin\LeadUserController@massDestroy')->name('lead-users.mass_destroy');
     Route::resource('leads', 'Admin\LeadController');
+    Route::get('leads/view/{id}', 'Admin\LeadController@view')->name('leads.view');
     Route::get('leads/show-all/{id}', 'Admin\LeadController@showAll')->name('leads.show-all');
     Route::delete('leads_mass_destroy', 'Admin\LeadController@massDestroy')->name('leads.mass_destroy');
+    Route::resource('comments', 'Admin\CommentController');
 });

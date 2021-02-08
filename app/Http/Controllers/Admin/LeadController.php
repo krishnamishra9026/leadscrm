@@ -19,16 +19,37 @@ class LeadController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         if (! Gate::allows('manage-leads')) {
             return abort(401);
         }
 
-        $lead_users = DB::table('lead_users')
-        ->select('*', DB::raw('count(*) as total'))
-        ->groupBy('mobile')
-        ->latest()->paginate(50);;
+        $leadUsers = DB::table('lead_users')
+                ->select('*', DB::raw('count(*) as total'))
+                ->groupBy('mobile')
+                ->latest();
+        $filter_status = $request->input('filter_status');
+        $filter_name = $request->input('filter_name');
+        $filter_website = $request->input('filter_website');
+        $filter_user = $request->input('filter_user');
+
+        if ($request->has('filter_status')) {
+            $leadUsers->where('lead_users.lead_status','LIKE', '%'.$request->input('filter_status').'%');
+        }        
+
+        if ($request->has('filter_name')) {
+            $leadUsers->where('lead_users.name','LIKE', '%'.$request->input('filter_name').'%');
+        }
+
+        if($request->has('filter_website')) {  
+            $leadUsers->where('lead_users.website','LIKE', '%'.$request->input('filter_website').'%');
+        }
+
+        if($request->has('filter_user')) {
+            $leadUsers->where('lead_users.user_id', $request->input('filter_user'));
+        }
+        $lead_users = $leadUsers->paginate(10);
 
         foreach ($lead_users as $key => $value) {
             $user_detail = LeadUser::where('id',$value->id)->with('user')->first();
@@ -37,11 +58,9 @@ class LeadController extends Controller
 
         $users = User::whereNotIn('id',[1])->get();
 
-        // echo '<pre>'; print_r($lead_users); echo '</pre>'; die();
-
         Session::forget('back_leads_url');
         Session::put('back_leads_url', URL::current());
-        return view('admin.leads.index', compact('lead_users','users'))->with('no',0);
+        return view('admin.leads.index', compact('lead_users','users','filter_name','filter_status','filter_website','filter_user'))->with('no',0);
     }
 
     /**
@@ -51,7 +70,6 @@ class LeadController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -71,8 +89,9 @@ class LeadController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(LeadUser $lead_user)
+    public function show($id)
     {
+        $lead_user = LeadUser::find($id);
         if (! Gate::allows('manage-leads')) {
             return abort(401);
         }
@@ -84,11 +103,22 @@ class LeadController extends Controller
            }           
        }      
 
-       $lead_user = LeadUser::where('id',$lead_user->id)->with('user')->latest()->first(); 
-
-
+       $lead_user = LeadUser::where('id',$lead_user->id)->with('user')->with('comments')->latest()->first(); 
 
         return view('admin.leads.show', compact('lead_user'));
+       
+    }
+
+    public function view($id)
+    {
+        $lead_user = LeadUser::find($id);
+        if (! Gate::allows('manage-leads')) {
+            return abort(401);
+        }    
+
+       $lead_user = LeadUser::where('id',$lead_user->id)->with('user')->with('comments')->latest()->first(); 
+
+        return view('admin.leads.view', compact('lead_user'));
        
     }
 
@@ -99,7 +129,7 @@ class LeadController extends Controller
             return abort(401);
         }
 
-        $lead_user = LeadUser::find($id);
+        $lead_user = LeadUser::where('id',$id)->first();
         $mobile = $lead_user->mobile;
 
         $lead_users = LeadUser::where('mobile',$mobile)->with('user')->latest()->get();  
@@ -150,15 +180,18 @@ class LeadController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(LeadUser $lead_user)
+    public function destroy($id)
     {
+        $lead_user = LeadUser::find($id);
         if (! Gate::allows('manage-leads')) {
             return abort(401);
         }
 
         $lead_user->delete();
 
-        return redirect()->route('admin.lead-users.index');
+        return redirect()->back()->with('message','Lead deleted successfully!');
+
+        return redirect()->route('admin.leads.index');
     }
 
     /**

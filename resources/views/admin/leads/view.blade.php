@@ -1,11 +1,6 @@
 @extends('layouts.admin')
 @section('content')
 
-<style type="text/css">
-    th{
-        width:20%
-    }
-</style>
 <div class="card">
     <div class="card-header">
         {{ trans('global.show') }} {{ trans('cruds.user.title') }}
@@ -20,14 +15,14 @@
         <div class="mb-2">
             <table class="table table-bordered table-striped">
                 <tbody>
-                    {{-- <tr>
+                    <tr>
                         <th>
                             {{ trans('cruds.user.fields.id') }}
                         </th>
                         <td>
                             {{ $lead_user->id }}
                         </td>
-                    </tr> --}}
+                    </tr>
                     <tr>
                         <th>
                             {{ trans('cruds.user.fields.name') }}
@@ -76,15 +71,7 @@
                             {{ trans('cruds.user.fields.lead_status') }}
                         </th>
                         <td>
-                            <select id="toggle-class" data-id="{{ $lead_user->id }}" class="form-control col-md-3" >
-                                <option @if ($lead_user->lead_status == 'Posted') selected @endif value="Posted">Posted</option>
-                                <option @if ($lead_user->lead_status == 'Call Back Required') selected @endif value="Call Back Required">Call Back Required</option>
-                                <option @if ($lead_user->lead_status == 'payment done') selected @endif value="payment done">payment done</option>
-                                <option @if ($lead_user->lead_status == 'Fake Lead') selected @endif value="Fake Lead">Fake Lead</option>
-                                <option @if ($lead_user->lead_status == 'Status4') selected @endif value="Status4">Status4</option>
-                                <option @if ($lead_user->lead_status == 'Status5') selected @endif value="Status5">Status5</option>
-                                <option @if ($lead_user->lead_status == 'Status6') selected @endif value="Status6">Status6</option>
-                            </select>
+                            {{ $lead_user->lead_status }}
                         </td>
                     </tr>
                     <tr>
@@ -107,23 +94,10 @@
                     
                     <tr>
                         <th>
-                           Comments @if(count($lead_user->comments) > 0)  <a  class="btn btn-xs btn-primary" href="{{ route('admin.comments.show', $lead_user->id) }}"> {{ trans('global.view') }} Comments </a> @endif
+                           Comments
                         </th>
                         <td>
-                           <form method="post" action="{{ route('admin.comments.store') }}">
-                            <div class="form-group">
-                                @csrf
-                                <input type="hidden" value="{{ $lead_user->id }}" name="lead_users_id">
-                                <select name="comment_type" class="form-control" required>
-                                    <option value="">Select Comment Type</option>
-                                    <option value="Lead">About Lead</option>
-                                    <option value="Payment">About Payment</option>
-                                </select>
-                                
-                                <textarea style="margin-top: 10px;" name="comment" placeholder="Comment" class="form-control" required></textarea>
-                                <input type="submit" style="margin-top: 10px;" class="btn btn-success" />
-                            </div>
-                        </form>
+                           @if(count($lead_user->comments) > 0)  <a  class="btn btn-xs btn-primary" href="{{ route('admin.comments.show', $lead_user->id) }}"> {{ trans('global.view') }} Comments </a> @else No comments.. @endif
                         </td>
                     </tr>
                     <tr>

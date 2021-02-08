@@ -3,7 +3,7 @@
 <div class="card">
     <div class="card-header">
         All Lead {{ trans('cruds.user.title_singular') }}s {{ trans('global.list') }}
-        <a style="float: right;" class="btn btn-default" href="{{ route('admin.leads.index') }}">
+        <a style="float: right;" class="btn btn-default" href="{{ route('admin.lead-users.index') }}">
             <i class="fa fa-arrow-left" aria-hidden="true"></i> {{ trans('global.back_to_list') }}
         </a>
     </div>
@@ -55,7 +55,7 @@
 
                             </td>
                             <td>
-                                {{ $no++ }}
+                                {{ $user->id }}
                             </td>
                             <td>
                                 {{ $user->name ?? '' }}
@@ -82,11 +82,16 @@
                                 {{ date(('d-m-Y H:i:s'),strtotime($user->created_at)) ?? '' }}
                             </td>
                             <td>
-                                <a class="btn btn-xs btn-primary" href="{{ route('admin.leads.view', $user->id) }}">
+                                <a class="btn btn-xs btn-primary" href="{{ route('admin.lead-users.show', $user->id) }}">
                                     {{ trans('global.view') }}
-                                </a>                     
+                                </a>  
+                                @if($user->total > 1)   
+                                <a class="btn btn-xs btn-primary" href="{{ route('admin.lead-users.show-all', $user->id) }}">
+                                    {{ trans('global.view') }} All
+                                </a>  
+                                @endif                      
 
-                                <form action="{{ route('admin.leads.destroy', $user->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                <form action="{{ route('admin.lead-users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
                                     <input type="hidden" name="_method" value="DELETE">
                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                     <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
@@ -110,7 +115,7 @@
   let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
   let deleteButton = {
     text: deleteButtonTrans,
-    url: "{{ route('admin.leads.mass_destroy') }}",
+    url: "{{ route('admin.lead-users.mass_destroy') }}",
     className: 'btn-danger',
     action: function (e, dt, node, config) {
       var ids = $.map(dt.rows({ selected: true }).nodes(), function (entry) {
@@ -136,7 +141,7 @@
   dtButtons.push(deleteButton)
 
   $.extend(true, $.fn.dataTable.defaults, {
-    order: [[ 1, 'asc' ]],
+    order: [[ 1, 'desc' ]],
     pageLength: 100,
   });
   $('.datatable-User:not(.ajaxTable)').DataTable({ buttons: dtButtons })

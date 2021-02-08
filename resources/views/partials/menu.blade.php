@@ -50,7 +50,7 @@
             @can('manage-leads')
 
             <li class="nav-item">
-                <a href="{{ route("admin.lead-users.index") }}" class="nav-link {{ request()->is('admin/lead-users') || request()->is('admin/lead-users/*') ? 'active' : '' }}">
+                <a href="{{ route("admin.leads.index") }}" class="nav-link {{ request()->is('admin/lead-users') || request()->is('admin/lead-users/*') ? 'active' : '' }}">
                    <i class="fas fa-assistive-listening-systems">
                           
                    </i>  &nbsp;&nbsp;
